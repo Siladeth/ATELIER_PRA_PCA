@@ -1,6 +1,5 @@
 ------------------------------------------------
 Séquence 5 : Exercices  
-Difficulté : Moyenne (~45 minutes)
 ---------------------------------------------------
 **Complétez et documentez ce fichier README.md** pour répondre aux questions des exercices.  
 Faites preuve de pédagogie et soyez clair dans vos explications et procedures de travail.  
@@ -40,7 +39,6 @@ Mettre en place des tests de restauration automatique pour s'assurer que la proc
 
 ---------------------------------------------------
 Séquence 6 : Ateliers  
-Difficulté : Moyenne (~2 heures)
 ---------------------------------------------------
 ### **Atelier 1 : Ajoutez une fonctionnalité à votre application**  
 **Ajouter une route GET /status** dans votre application qui affiche en JSON :
@@ -55,15 +53,46 @@ Difficulté : Moyenne (~2 heures)
 ### **Atelier 2 : Choisir notre point de restauration**  
 Aujourd’hui nous restaurobs “le dernier backup”. Nous souhaitons **ajouter la capacité de choisir un point de restauration**.
 
-*..Décrir ici votre procédure de restauration (votre runbook)..*  
-  
----------------------------------------------------
-Evaluation
----------------------------------------------------
-Cet atelier PRA PCA, **noté sur 20 points**, est évalué sur la base du barème suivant :  
-- Série d'exerices (5 points)
-- Atelier N°1 - Ajout d'un fonctionnalité (4 points)
-- Atelier N°2 - Choisir son point de restauration (4 points)
-- Qualité du Readme (lisibilité, erreur, ...) (3 points)
-- Processus travail (quantité de commits, cohérence globale, interventions externes, ...) (4 points) 
+**1. Lister les points de restauration disponibles**
+`kubectl -n pra exec -it $(kubectl -n pra get pod -l app=flask -o name) -- ls -lh /backup`
+On note le nom exact (ici app-1772117401.db)
+<img width="942" height="160" alt="image" src="https://github.com/user-attachments/assets/ba4693e2-d62c-4edb-b991-2f8b0efea6ea" />
+
+**2. Préparation du sinistre**
+
+Pour garantir l'intégrité de la restauration, on coupe l'accès à la base de données 
+
+`kubectl -n pra scale deployment flask --replicas=0`
+
+**3. Lancement de la restauration spécifique :**
+`# Supprimer l'ancien job s'il existe
+kubectl -n pra delete job sqlite-restore --ignore-not-found
+
+# Lancer le job avec le fichier choisi
+kubectl -n pra run sqlite-restore-manual \
+  --rm -it --image=alpine --restart=Never \
+  --overrides='{
+    "spec": {
+      "containers": [{
+        "name": "restore",
+        "image": "alpine",
+        "command": ["/bin/sh", "-c"],
+        "args": ["cp /backup/app-1772117401.db /data/app.db"],
+        "volumeMounts": [
+          {"name": "data", "mountPath": "/data"},
+          {"name": "backup", "mountPath": "/backup"}
+        ]
+      }],
+      "volumes": [
+        {"name": "data", "persistentVolumeClaim": {"claimName": "pra-data"}},
+        {"name": "backup", "persistentVolumeClaim": {"claimName": "pra-backup"}}
+      ]
+    }
+  }'`
+
+
+**4 Remise en production**
+
+`kubectl -n pra scale deployment flask --replicas=1`
+
 
