@@ -54,8 +54,11 @@ Séquence 6 : Ateliers
 Aujourd’hui nous restaurobs “le dernier backup”. Nous souhaitons **ajouter la capacité de choisir un point de restauration**.
 
 **1. Lister les points de restauration disponibles**
+
 `kubectl -n pra exec -it $(kubectl -n pra get pod -l app=flask -o name) -- ls -lh /backup`
+
 On note le nom exact (ici app-1772117401.db)
+
 <img width="942" height="160" alt="image" src="https://github.com/user-attachments/assets/ba4693e2-d62c-4edb-b991-2f8b0efea6ea" />
 
 **2. Préparation du sinistre**
