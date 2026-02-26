@@ -8,35 +8,35 @@ Faites preuve de pédagogie et soyez clair dans vos explications et procedures d
 **Exercice 1 :**  
 Quels sont les composants dont la perte entraîne une perte de données ?  
   
-La perte du pra-data et pra-backup entraine la perte définitive des données.
+###La perte du pra-data et pra-backup entraine la perte définitive des données.
 Si la base est corrompue le backup le sera aussi. Si l'on ne s'en rend pas compte toutes les données peuvent être perdues.
-Un problème sur le disque physique qui héberge les données entraîne également la perte des données.
+Un problème sur le disque physique qui héberge les données entraîne également la perte des données.###
 
 **Exercice 2 :**  
 Expliquez nous pourquoi nous n'avons pas perdu les données lors de la supression du PVC pra-data  
   
-Nous n'avons pas perdu les données grâce à la mise en place de la stratégie de sauvegarde asynchrone.  Le fichier database.sqlite est copié sur pra-backup toute les minutes avec le CronJob. Nous avons ensuite pu le restaurer depuis pra-backup vers pra-data.
+###Nous n'avons pas perdu les données grâce à la mise en place de la stratégie de sauvegarde asynchrone.  Le fichier database.sqlite est copié sur pra-backup toute les minutes avec le CronJob. Nous avons ensuite pu le restaurer depuis pra-backup vers pra-data.###
 
 **Exercice 3 :**  
 Quels sont les RTO et RPO de cette solution ?  
   
-Le RTO est manuel et dépend donc de l'humain. 
-Le RPO est de 1 minute car le CronJob se lance chaque minute.
+###Le RTO est manuel et dépend donc de l'humain. 
+Le RPO est de 1 minute car le CronJob se lance chaque minute.###
 
 **Exercice 4 :**  
 Pourquoi cette solution (cet atelier) ne peux pas être utilisé dans un vrai environnement de production ? Que manque-t-il ?   
   
-Les sauvegardes sont au même endroit (même cluster voire même disque). Si un évènement intervient dessus, la production et la backup sont perdus.
-Il n'y a pas de monitoring qui alerte en cas d'échec du CronJob.
+###Les sauvegardes sont au même endroit (même cluster voire même disque). Si un évènement intervient dessus, la production et la backup sont perdus.
+Il n'y a pas de monitoring qui alerte en cas d'échec du CronJob.###
 
   
 **Exercice 5 :**  
 Proposez une archtecture plus robuste.   
   
-Envoyer les backup vers un stockage externe (par exemple cloud).
+###Envoyer les backup vers un stockage externe (par exemple cloud).
 Repliquer la base de donnée pour un RPO proche de zéro.
 Déployer le cluster sur plusieurs zones de disponibilités pour que le service puisse continuer même si un datacenter tombe en panne.
-Mettre en place des tests de restauration automatique pour s'assurer que la procédure mise en place mache bien.
+Mettre en place des tests de restauration automatique pour s'assurer que la procédure mise en place mache bien.###
 
 ---------------------------------------------------
 Séquence 6 : Ateliers  
