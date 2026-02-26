@@ -48,7 +48,8 @@ Difficulté : Moyenne (~2 heures)
 * last_backup_file : nom du dernier backup présent dans /backup
 * backup_age_seconds : âge du dernier backup
 
-*..**Déposez ici une copie d'écran** de votre réussite..*
+<img width="999" height="217" alt="image" src="https://github.com/user-attachments/assets/458c6820-d2c7-4aaf-9d1d-03fc05ed833f" />
+
 
 ---------------------------------------------------
 ### **Atelier 2 : Choisir notre point de restauration**  
